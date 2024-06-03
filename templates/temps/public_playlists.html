@@ -1,0 +1,43 @@
+{% extends "temps/navbar.html" %}
+{% block css %}
+<style>
+    .pcont {
+        width: 200px;
+        height: auto;
+        background: white;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+    }
+    .playlist-item {
+        margin-bottom: 10px;
+    }
+    .pname {
+        font-weight: bold;
+    }
+    .playlist-grid {
+        display: flex;
+        gap: 30px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+</style>
+{% endblock %}
+{% block section %}
+<div class="mcon">
+    <center><h2 class="playlist-heading">Public Playlists</h2></center>
+    <div>
+        <div id="playlists" class="playlist-grid">
+            {% for playlist in public_playlists %}
+            <div class="playlist-item pcont">
+                <div class="pname">{{ playlist.name }}</div>
+                <div class="mvcont">{{ playlist.movies.count }} movies</div>
+                <button onclick="window.location.href='/public_playlist/{{ playlist.id }}'">View Playlist</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

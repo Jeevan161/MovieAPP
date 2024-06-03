@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Playlist</title>
+</head>
+<body>
+    <h1>Create Playlist</h1>
+    <form action="create_playlist" method="post">
+        {% csrf_token %}
+        <label for="name">Playlist Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <input type="checkbox" id="is_public" name="is_public" value="true">
+        <label for="is_public">Public</label><br>
+        <button type="submit">Create Playlist</button>
+    </form>
+</body>
+</html>

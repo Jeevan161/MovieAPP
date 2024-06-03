@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap');
+:root
+{
+    --fw-normal:400;
+    --fw-strong:600;
+    --fw-dark:900;
+    --bg:#E0EFDE;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 500,
+  'GRAD' 0,
+  'opsz' 24
+}
+*{
+    margin:0;
+    padding:0;
+}
+
+body
+{
+    font-family: "Exo", sans-serif;
+    font-optical-sizing: auto;
+    font-weight :var(--fw-normal);
+    background:var(--bg);
+}

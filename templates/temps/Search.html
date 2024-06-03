@@ -1,0 +1,236 @@
+{% extends "temps/navbar.html" %}
+{% block css %}
+<style>
+    .adform
+    {
+        display:flex;
+        width:100%;
+        align-items:center;
+        justify-content:center;
+        flex-direction:column;
+    }
+    .adform input
+    {
+        padding: 8px;
+        border-radius: 10px;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        border: none;
+    }
+</style>
+{% endblock %}
+{% block section %}
+<div class="mcon">
+    <center>
+          {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <p  style="color:red;margin-bottom:20px;"> {{ message }}</p>
+      {% endfor %}
+    </ul>
+  {% endif %}
+        </center>
+    <form id="searchForm" method="POST" onsubmit="return false;">
+        {% csrf_token %}
+        <div class="search">
+            <input type="text" id="searchInput" placeholder="Search">
+        </div>
+    </form>
+    <div class="glcon" id="rrr">
+        <div id="results" class="results-grid"></div>
+    </div>
+    <div id="pagination">
+        <button id="prevPage" disabled>Previous</button>
+        <button id="nextPage">Next</button>
+    </div>
+</div>
+
+<!-- Playlist Popup -->
+<div id="playlistPopup" class="popup" style="display: none;">
+    <div class="popup-content">
+        <h2>Add to Playlist</h2>
+
+        <ul id="playlistOptions"></ul>
+        <form id="createPlaylistForm" method="POST" action="/create_playlist" class="adform">
+            {% csrf_token %}
+            <div>
+            <input type="hidden" id="imdbIdInput" name="imdb_id">
+            <input type="text" id="playlistName" name="name" required placeholder="New Playlist Name">
+                </div>
+            <div>
+            <input type="submit" value="Create Playlist" id="submitBtn">
+                </div>
+        </form>
+        <button id="cancelBtn">Cancel</button>
+    </div>
+</div>
+
+<script>
+    let currentPage = 1;
+    let currentImdbID = null;
+    let searchTimer;
+    let isAuthenticated = {{ user.is_authenticated|lower }};  // Pass the user's authentication status
+
+    function setImdbId(imdbID) {
+        document.getElementById('imdbIdInput').value = imdbID;
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        setImdbId(currentImdbID); // Set the imdb_id value
+        document.getElementById('createPlaylistForm').submit(); // Submit the form
+    });
+
+    function fetchResults(query, page) {
+        fetch('/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: new URLSearchParams({
+                'query': query,
+                'page': page
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            var resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';  // Clear previous results
+
+            // Check if there are results in the data
+            if (data.Search) {
+                // Populate results
+                data.Search.forEach(result => {
+                    var resultItem = document.createElement('div');
+                    document.getElementById("rrr").style.display = "block";
+                    document.getElementById("pagination").style.display = "flex";
+                    resultItem.className = 'result-item';
+
+                    var poster = document.createElement('img');
+                    poster.src = result.Poster !== "N/A" ? result.Poster : 'placeholder.jpg'; // Placeholder image if poster is not available
+                    poster.alt = `${result.Title} poster`;
+
+                    // Add click event listener to image to redirect to movie details page
+                    poster.addEventListener('click', function() {
+                        redirectToMovieDetails(result.imdbID);
+                    });
+
+                    var title = document.createElement('h3');
+                    title.textContent = result.Title;
+
+                    // Add click event listener to title to redirect to movie details page
+                    title.addEventListener('click', function() {
+                        redirectToMovieDetails(result.imdbID);
+                    });
+
+                    var year = document.createElement('p');
+                    year.textContent = result.Year;
+
+                    var addToPlaylistBtn = document.createElement('button');
+                    addToPlaylistBtn.textContent = 'Add to Playlist';
+                    addToPlaylistBtn.addEventListener('click', function() {
+                        if (isAuthenticated) {
+                            showPlaylistPopup(result.imdbID);
+                        } else {
+                            window.location.href = '/login';  // Redirect to login page if not authenticated
+                        }
+                    });
+
+                    resultItem.appendChild(poster);
+                    resultItem.appendChild(title);
+                    resultItem.appendChild(year);
+                    resultItem.appendChild(addToPlaylistBtn);
+
+                    resultsDiv.appendChild(resultItem);
+                });
+            } else {
+                resultsDiv.innerHTML = 'No results found';
+            }
+
+            // Update pagination buttons
+            document.getElementById('prevPage').disabled = currentPage <= 1;
+            document.getElementById('nextPage').disabled = !data.Search || data.Search.length < 10; // Assuming 10 results per page
+        });
+    }
+
+    function redirectToMovieDetails(imdbID) {
+        window.location.href = `/movie/${imdbID}`;
+    }
+
+    function showPlaylistPopup(imdbID) {
+        currentImdbID = imdbID; // Store the current IMDb ID
+        fetch('/get_playlists')
+            .then(response => response.json())
+            .then(data => {
+                var playlistOptions = document.getElementById('playlistOptions');
+                playlistOptions.innerHTML = '';  // Clear previous options
+
+                if (data.playlists.length > 0) {
+                    data.playlists.forEach(playlist => {
+                        var li = document.createElement('li');
+                        li.textContent = playlist.name;
+                        li.addEventListener('click', function() {
+                            addToPlaylist(playlist.id);
+                        });
+                        playlistOptions.appendChild(li);
+                    });
+                } else {
+                    var li = document.createElement('li');
+                    li.textContent = 'No playlists found. Create a new playlist first.';
+                    playlistOptions.appendChild(li);
+                }
+
+                var popup = document.getElementById('playlistPopup');
+                popup.style.display = 'flex';
+            });
+    }
+
+    function addToPlaylist(playlistID) {
+        fetch('/add_to_playlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'imdb_id': currentImdbID,
+                'playlist_id': playlistID
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);  // Show success message
+            var popup = document.getElementById('playlistPopup');
+            popup.style.display = 'none';  // Hide the popup after adding to the playlist
+        });
+    }
+
+     document.getElementById('searchInput').addEventListener('keyup', function() {
+        clearTimeout(searchTimer); // Clear any existing timer
+        searchTimer = setTimeout(function() {
+            var query = this.value.trim();  // Remove trailing spaces
+            currentPage = 1;  // Reset to first page on new query
+            fetchResults(query, currentPage);
+        }.bind(this), 2000); // Wait for 2000 milliseconds (2 seconds) after typing stops
+    });
+
+    document.getElementById('prevPage').addEventListener('click', function() {
+        if (currentPage > 1) {
+            currentPage--;
+            var query = document.getElementById('searchInput').value.trim();  // Remove trailing spaces
+            fetchResults(query, currentPage);
+        }
+    });
+
+    document.getElementById('nextPage').addEventListener('click', function() {
+        currentPage++;
+        var query = document.getElementById('searchInput').value.trim();  // Remove trailing spaces
+        fetchResults(query, currentPage);
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', function() {
+        var popup = document.getElementById('playlistPopup');
+        popup.style.display = 'none';
+    });
+</script>
+{% endblock %}

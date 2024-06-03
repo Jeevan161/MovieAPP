@@ -1,0 +1,87 @@
+{% extends "temps/navbar.html" %}
+{% block css %}
+<style>
+    .pcont {
+        width: 200px;
+        height: auto;
+        background: white;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+    }
+    .playlist-item {
+        margin-bottom: 10px;
+    }
+    .pname {
+        font-weight: bold;
+    }
+    .playlist-grid {
+        display: flex;
+        gap: 30px;
+        flex-direction: row;
+    }
+    .delete-form, .toggle-form {
+        display: inline;
+    }
+</style>
+{% endblock %}
+{% block section %}
+<div class="mcon">
+    <center><h2 class="playlist-heading">MY PLAYLISTS</h2></center>
+    {% if messages %}
+    <center>
+    <ul class="messages">
+      {% for message in messages %}
+        <p  style="color:red;margin-bottom:20px;"> {{ message }}</p>
+      {% endfor %}
+    </ul>
+  {% endif %}
+    </center>
+    <div>
+        <div>
+            <div id="playlists" class="playlist-grid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchPlaylists();
+    });
+
+    function fetchPlaylists() {
+        fetch('/get_playlists')
+            .then(response => response.json())
+            .then(data => {
+                var playlistsDiv = document.getElementById('playlists');
+                playlistsDiv.innerHTML = '';  // Clear previous playlists
+
+                if (data.playlists.length > 0) {
+                    data.playlists.forEach(playlist => {
+                        var playlistItem = document.createElement('div');
+                        playlistItem.className = 'playlist-item pcont';
+                        playlistItem.innerHTML = `
+                            <div class="pname">${playlist.name}</div>
+                            <div class="mvcont">${playlist.num_movies} movies</div>
+                            <form action="/delete_playlist/${playlist.id}" method="post" class="delete-form">
+                                {% csrf_token %}
+                                <button type="submit">Delete</button>
+                            </form>
+                            <form action="/toggle_privacy/${playlist.id}/" method="post" class="toggle-form">
+                                {% csrf_token %}
+                                <button type="submit">${playlist.is_public ? 'Make Private' : 'Make Public'}</button>
+                            </form>
+                        `;
+                        playlistItem.addEventListener('click', function() {
+                            window.location.href = `/playlist/${playlist.id}/`;
+                        });
+                        playlistsDiv.appendChild(playlistItem);
+                    });
+                } else {
+                    playlistsDiv.innerHTML = 'No playlists found';
+                }
+            });
+    }
+</script>
+{% endblock %}

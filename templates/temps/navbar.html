@@ -1,0 +1,45 @@
+{% extends "temps\base.html" %}
+{% load static %}
+{% block css %}
+{% endblock %}
+{% block content %}
+<nav>
+<div class="rightsi">
+      <h4 style="color:white">MovieApp</h4>
+    </div>
+  <div style="height:100%;" >
+  <input type="checkbox" id="sidebar-active">
+  <label for="sidebar-active" class="open-sidebar-btn">
+    <span class="material-symbols-outlined" style="height:32px;">
+      menu
+    </span>
+  </label>
+
+  <label id="overlay" for="sidebar-active"></label>
+  <div class="links-container">
+    <label for="sidebar-active" class="close-sidebar-btn">
+      <span class="material-symbols-outlined" style="height:32px;">
+        close
+      </span>
+    </label>
+
+    <div class="leftsi">
+    <a class="hov" href="" >Home</a>
+    <a  class="hov" href="/search" >Search</a>
+    <a  class="hov" href="/playlists" >My Playlists</a>
+    <a  class="hov" href="/public_playlists" >Public playlists</a>
+    {% if user.is_authenticated %}
+                    <div class="btn"><button><a class="abtn" href="{% url 'logout' %}">Logout</a></button></div>
+                {% else %}
+                    <div class="btn"><button><a class="abtn" href="{% url 'login' %}">Login</a></button></div>
+                    <div class="btn"><button><a class="abtn" href="{% url 'signup' %}">Signup</a></button></div>
+                {% endif %}
+      </div>
+  </div>
+    </div>
+</nav>
+<section class="lgcont">
+  {% block section %} {% endblock %}
+</section>
+
+{% endblock %}

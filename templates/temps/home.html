@@ -1,0 +1,33 @@
+{% extends "temps/navbar.html" %}
+
+{% block section %}
+<div class="mcon">
+    {% if user_name %}
+        <h2>Welcome, {{ user_name }}!</h2>
+    {% else %}
+        <h2>Welcome to MovieDB!</h2>
+    {% endif %}
+
+    {% if playlist %}
+      <center>  <h3>{{ playlist.name }} </h3></center>
+        <div id="top-movies" class="results-grid">
+            {% for movie in movies %}
+            <div class="result-item" onclick="redirectToMovieDetails('{{ movie.imdb_id }}')">
+                <img src="{{ movie.mv_poster }}" alt="{{ movie.mv_name }} poster">
+                <h3>{{ movie.mv_name }}</h3>
+                <p>Year: {{ movie.mv_year }}</p>
+
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Playlist not found or no movies in the playlist.</p>
+    {% endif %}
+</div>
+
+<script>
+function redirectToMovieDetails(imdbID) {
+    window.location.href = `/movie/${imdbID}`;
+}
+</script>
+{% endblock %}

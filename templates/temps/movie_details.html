@@ -1,0 +1,55 @@
+{% extends "temps/navbar.html" %}
+{% block section %}
+<!--<div class="movie-details">-->
+<!--    <h1>{{ movie.Title }}</h1>-->
+<!--    <img src="{{ movie.Poster }}" alt="{{ movie.Title }} poster">-->
+<!--    <p><strong>Year:</strong> {{ movie.Year }}</p>-->
+<!--    <p><strong>Released:</strong> {{ movie.Released }}</p>-->
+<!--    <p><strong>Runtime:</strong> {{ movie.Runtime }}</p>-->
+<!--    <p><strong>Genre:</strong> {{ movie.Genre }}</p>-->
+<!--    <p><strong>Director:</strong> {{ movie.Director }}</p>-->
+<!--    <p><strong>Writer:</strong> {{ movie.Writer }}</p>-->
+<!--    <p><strong>Actors:</strong> {{ movie.Actors }}</p>-->
+<!--    <p><strong>Plot:</strong> {{ movie.Plot }}</p>-->
+<!--    <p><strong>Language:</strong> {{ movie.Language }}</p>-->
+<!--    <p><strong>Country:</strong> {{ movie.Country }}</p>-->
+<!--    <p><strong>Awards:</strong> {{ movie.Awards }}</p>-->
+<!--    <p><strong>IMDB Rating:</strong> {{ movie.imdbRating }}</p>-->
+<!--    <p><strong>IMDB Votes:</strong> {{ movie.imdbVotes }}</p>-->
+<!--    <a href="{% url 'search' %}">Back to Search</a>-->
+<!--</div>-->
+<section class="section-p1 ">
+        <div class="product-view">
+        <section class="left-product-view">
+            <img src="{{ movie.Poster }}" alt="{{ movie.Title }} poster" style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;margin:10px 30px;height:60vh;border-radius:15px;width:20vw;"  >
+        </section>
+        <section class="right-product-view">
+            <div class="product-view-description">
+                <h1>{{ movie.Title }}</h1>
+                <p>Year :&nbsp;&nbsp;<strong>{{ movie.Year }}</strong></p>
+                <p>Released :&nbsp;&nbsp;<strong>{{ movie.Released }}</strong></p>
+                <p>Runtime :&nbsp;&nbsp;<strong>{{ movie.Runtime }}</strong></p>
+                <p>Genre :&nbsp;&nbsp;<strong>{{ movie.Genre }}</strong></p>
+                <p>Director :&nbsp;&nbsp;<strong>{{ movie.Director }}</strong></p>
+                <p>Writer :&nbsp;&nbsp;<strong>{{ movie.Writer }}</strong></p>
+                <p>Actors :&nbsp;&nbsp;<strong>{{ movie.Actors }}</strong></p>
+                <p>Plot :&nbsp;&nbsp;<strong>{{ movie.Plot }}</strong></p>
+                <p>Language :&nbsp;&nbsp;<strong>{{ movie.Language }}</strong></p>
+                <p>Country :&nbsp;&nbsp;<strong>{{ movie.Country }}</strong></p>
+                <p>Awards :&nbsp;&nbsp;<strong>{{ movie.Awards }}</strong></p>
+                <p>IMDB Votes :&nbsp;&nbsp;<strong>{{ movie.imdbVotes }}</strong></p>
+
+                <div class="label-tag-product">
+                    <strong>IMDB Rating:{{ movie.imdbRating }}</strong>
+                </div>
+            </div>
+<!--            <div class="product-view-price">-->
+<!--                <h2>₹ ${pro.discount} /${pro.unit}</h2>-->
+<!--                <p>Orginal price ₹${pro.cost}/${pro.unit}</p>-->
+<!--            </div>-->
+
+        </section>
+        </div>
+
+    </section>
+{% endblock %}

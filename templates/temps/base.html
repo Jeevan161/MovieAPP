@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <title>{% block title %}{% endblock %}</title>
+    {% block css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'temp/base.css' %}" >
+     <link rel="stylesheet" href="{% static 'temp/login.css' %}" >
+    <link rel="stylesheet" href="{% static 'temp/navbar.css' %}" >
+    <link rel="stylesheet" href="{% static 'temp/search.css' %}" >
+    <link rel="stylesheet" href="{% static 'temp/movie-details.css' %}" >
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    {% block js %}{% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,54 @@
+{% extends "temps\navbar.html" %}
+{% load static %}
+{% block css %}
+<style>
+.sform input
+{
+    padding:4px;
+    border:none;
+    border-radius:10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+</style>
+{% endblock %}
+{% block section %}
+
+    <center class="cont">
+        <div class="content">
+            <div class="title">
+                <h4>Sign Up</h4>
+            </div>
+            <form action="signup" method="post" style="width:100%" class="sform">
+                {% csrf_token %}
+            <div class="input">
+                <input type="email" name="email" placeholder="Email or Phone number">
+            </div>
+             <div class="input" style="padding:10px 5px 10px 5px;">
+                <input type="fullname" name="fullname" placeholder="Full Name">
+            </div>
+             <div class="input" style="padding:10px 5px 10px 5px;">
+                <input type="password" name="password" placeholder="Password">
+            </div>
+             <div class="input" style="padding:10px 5px 10px 5px;">
+                <input type="cnfpassword" name="cnfpassword" placeholder="Confirm Password">
+            </div>
+            <div class="input" style="padding:30px 5px 10px 5px;">
+               <button type="submit">Login </button>
+            </div>
+                </form>
+            <a class="fpp" href="">forget password?</a>
+        </div>
+        <center>
+        {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <p  style="color:red;margin-bottom:20px;"> {{ message }}</p>
+      {% endfor %}
+    </ul>
+  {% endif %}
+            </center>
+
+        </center>
+</div>
+
+{% endblock %}
