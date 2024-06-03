@@ -33,6 +33,6 @@ MovieAPP is a web application built with Django that allows users to search for 
 
 ## Deployment
 
-The project is deployed on Python AnyWhere: [Django Movie Library](https://jeevansravanth7.pythonanywhere.com/)
+The project is deployed on Python AnyWhere: [MovieAPP](https://jeevansravanth7.pythonanywhere.com/)
 Code repository: [GitHub](https://github.com/Jeevan161/MovieAPP)
 
